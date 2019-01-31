@@ -7,7 +7,8 @@ LINK=g++
 SRCDIR=src
 OBJDIR=obj
 FLAGS=-g -Wall -std=c++11 -pthread 
-LIBS=-lpcap -lcurses 
+#LIBS=-lpcap -lcurses 
+LIBS=-lpcap 
 OBJS=$(OBJDIR)/settings.o $(OBJDIR)/main.o $(OBJDIR)/packet_stats.o $(OBJDIR)/async_log.o $(OBJDIR)/proc.o $(OBJDIR)/name_res.o $(OBJDIR)/cap_mgr.o 
 EXEC=nettop
 DATE=$(shell date +"%Y-%m-%d")
