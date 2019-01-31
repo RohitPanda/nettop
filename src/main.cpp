@@ -90,7 +90,8 @@ namespace {
 	}
 
 	class curses_setup {
-		WINDOW 			*w_;
+		//WINDOW 			*w_;
+                //SCREEN 			*w_;
 		nettop::name_res&	nr_;
 		const size_t		limit_hosts_;
 
@@ -101,79 +102,81 @@ namespace {
 
 		static void recv_send_format(const std::chrono::nanoseconds& tm_elapsed, const size_t recv, const size_t sent, double& recv_d, double& sent_d, const char* & fmt) {
 			const double	tm_fct = 1000000000.0/tm_elapsed.count();
-			const size_t	max_bytes = tm_fct*((recv > sent) ? recv : sent);
-			if(max_bytes >= 1024*1024*1024) {
-				const double	cnv_fct = 1.0/(1024.0*1024.0*1024.0);
-				recv_d = cnv_fct*recv*tm_fct;
-				sent_d = cnv_fct*sent*tm_fct;
-				fmt = GBPS;
-			} else if(max_bytes >= 1024*1024) {
-				const double	cnv_fct = 1.0/(1024.0*1024.0);
-				recv_d = cnv_fct*recv*tm_fct;
-				sent_d = cnv_fct*sent*tm_fct;
-				fmt = MBPS;
-			} else if(max_bytes >= 1024) {
-				const double	cnv_fct = 1.0/1024.0;
-				recv_d = cnv_fct*recv*tm_fct;
-				sent_d = cnv_fct*sent*tm_fct;
-				fmt = KBPS;
-			} else {
-				recv_d = tm_fct*recv;
-				sent_d = tm_fct*sent;
-				fmt = BPS;
-			}
+                        //const size_t	max_bytes = tm_fct*((recv > sent) ? recv : sent);
+//                        if(max_bytes >= 1024*1024*1024) {
+//                                const double	cnv_fct = 1.0/(1024.0*1024.0*1024.0);
+//                                recv_d = cnv_fct*recv*tm_fct;
+//                                sent_d = cnv_fct*sent*tm_fct;
+//                                fmt = GBPS;
+//                        } else if(max_bytes >= 1024*1024) {
+//                                const double	cnv_fct = 1.0/(1024.0*1024.0);
+//                                recv_d = cnv_fct*recv*tm_fct;
+//                                sent_d = cnv_fct*sent*tm_fct;
+//                                fmt = MBPS;
+//                        } else if(max_bytes >= 1024) {
+                                const double	cnv_fct = 1.0/1024.0;
+                                recv_d = cnv_fct*recv*tm_fct;
+                                sent_d = cnv_fct*sent*tm_fct;
+                                fmt = KBPS;
+//                        } else {
+//				recv_d = tm_fct*recv;
+//				sent_d = tm_fct*sent;
+//				fmt = BPS;
+                        //}
 		}
 	public:
-		curses_setup(nettop::name_res& nr, const size_t limit_hosts = 0) : w_(initscr()), nr_(nr), limit_hosts_(limit_hosts) {
-		}
+		//curses_setup(nettop::name_res& nr, const size_t limit_hosts = 0) : w_(initscr()), nr_(nr), limit_hosts_(limit_hosts) {
+                //curses_setup(nettop::name_res& nr, const size_t limit_hosts = 0) : w_(newterm(NULL, stderr, stdin)), nr_(nr), limit_hosts_(limit_hosts) {
+                curses_setup(nettop::name_res& nr, const size_t limit_hosts = 0) : nr_(nr), limit_hosts_(limit_hosts) {
+                }
 		
 		~curses_setup() {
-			endwin();
+                        //endwin();
 		}
 
 		void draw_paused(void) {
-			int 		row = 0; // number of terminal rows
-        		int 		col = 0; // number of terminal columns
-        		getmaxyx(stdscr, row, col);      /* find the boundaries of the screeen */
-			if(col < 60 || row < 5) {
-				refresh();
-				return;
-			}
+//			int 		row = 0; // number of terminal rows
+//        		int 		col = 0; // number of terminal columns
+//                        getmaxyx(stdscr, row, col);      /* find the boundaries of the screeen */
+//			if(col < 60 || row < 5) {
+//				refresh();
+//				return;
+//			}
 
-			static const char	PAUSED[] = "--- PAUSED ---";
-			const size_t		p_offset = (col - std::strlen(PAUSED))/2;
-			attron(A_BOLD);
-			mvprintw(1, p_offset, "%s", PAUSED);
-			attroff(A_BOLD);
-			refresh();
+//			static const char	PAUSED[] = "--- PAUSED ---";
+//			const size_t		p_offset = (col - std::strlen(PAUSED))/2;
+//			attron(A_BOLD);
+//			mvprintw(1, p_offset, "%s", PAUSED);
+//			attroff(A_BOLD);
+//			refresh();
 		}
 	
-		void redraw(const std::chrono::nanoseconds& tm_elapsed, const sorted_p_vec& s_v, const size_t total_pkts, const nettop::proc_mgr::stats& st) {
-			clear();
-			int 		row = 0; // number of terminal rows
-        		int 		col = 0; // number of terminal columns
-        		getmaxyx(stdscr, row, col);      /* find the boundaries of the screeen */
+                void redraw(const std::chrono::nanoseconds& tm_elapsed, const sorted_p_vec& s_v, const size_t total_pkts, const nettop::proc_mgr::stats& st) {
+                        //clear();
+                        //int 		row = 0; // number of terminal rows
+                        //int 		col = 0; // number of terminal columns
+                        //getmaxyx(stdscr, row, col);      /* find the boundaries of the screeen */
 			// UI coordinates:
 			// 6     2 23                     2 9        2 9        2 5
 			// PIDXXX  cmdlineXXXXXXXXXXXXXXXX  recvXXXXX  sentXXXXX  KiB/s
-			if(col < 60 || row < 5) {
-				mvprintw(0, 0, "Need at least a screen of 60x5 (%d/%d)", col, row);
-				refresh();
-				return;
-			}
-			const size_t	cmdline_len = col - (6+2+9+2+9+2+6+3);
-			int		cur_row = 2;
+//			if(col < 60 || row < 5) {
+//				mvprintw(0, 0, "Need at least a screen of 60x5 (%d/%d)", col, row);
+//				refresh();
+//				return;
+//			}
+                        //const size_t	cmdline_len = col - (6+2+9+2+9+2+6+3);
+                        //int		cur_row = 2;
 			size_t		tot_recv = 0,
 					tot_sent = 0;
 			// print header
-			attron(A_REVERSE);
-			mvprintw(cur_row++, 0, "%-6s  %-*s  %-9s  %-9s        ", "PID", cmdline_len, "CMDLINE", "RECV", "SENT");
-			attroff(A_REVERSE);
+                        //attron(A_REVERSE);
+                        //mvprintw(cur_row++, 0, "%-6s  %-*s  %-9s  %-9s        ", "PID", cmdline_len, "CMDLINE", "RECV", "SENT");
+                        //attroff(A_REVERSE);
 			// print each entity
 			for(const auto& sp_i : s_v) {
 				// print each process row
 				const auto&	i = *(sp_i->it_p_vec);
-				std::string	r_cmd = i.cmd; r_cmd.resize(cmdline_len);
+                                std::string	r_cmd = i.cmd; //r_cmd.resize(cmdline_len);
 				double		r_d = 0.0,
 						s_d = 0.0;
 				const char*	fmt = "";
@@ -181,22 +184,22 @@ namespace {
 				tot_recv += i.total_rs.first;
 				tot_sent += i.total_rs.second;
 				// if we don't have more UI space, don't bother printing this row..
-				if(cur_row >= row-1)
-					continue;
-				attron(A_BOLD);
-				mvprintw(cur_row++, 0, "%6d  %-*s %10.2f %10.2f  %-5s", i.pid, cmdline_len, r_cmd.c_str(), r_d, s_d, fmt);
-				attroff(A_BOLD);
+//				if(cur_row >= row-1)
+//					continue;
+                                //attron(A_BOLD);
+                                //mvprintw(cur_row++, 0, "%6d  %-*s %10.2f %10.2f  %-5s", i.pid, cmdline_len, r_cmd.c_str(), r_d, s_d, fmt);
+                                //attroff(A_BOLD);
 				// print each server txn
 				size_t	cur_hosts = 0;
 				for(const auto& sp_j : sp_i->v_it_addr) {
 					if(limit_hosts_ && cur_hosts >= limit_hosts_) {
-						attron(A_DIM);
-						mvprintw(cur_row++, 0, "           ...");
-						attroff(A_DIM);
+                                                //attron(A_DIM);
+                                                //mvprintw(cur_row++, 0, "           ...");
+                                                //attroff(A_DIM);
 						break;
 					}
 					const auto&	j = *sp_j;
-					const size_t	host_line = cmdline_len-3,
+                                        const size_t	//host_line = cmdline_len-3,
 							tot_t = j.second.udp_t + j.second.tcp_t,
 							udp_p = (tot_t) ? 100.0*j.second.udp_t/(j.second.udp_t + j.second.tcp_t) : 0,
 							tcp_p = (tot_t) ? 100 - udp_p : 0;
@@ -206,11 +209,18 @@ namespace {
 					}
 					char		buf[256];
 					std::snprintf(buf, 256, "%s%s", (nettop::settings::TCP_UDP_TRAFFIC) ? tcp_udp_buf : "", nr_.to_str(j.first).c_str());
-					std::string	r_host = buf; r_host.resize(host_line);
+                                        std::string	r_host = buf; //r_host.resize(host_line);
 					recv_send_format(tm_elapsed, j.second.recv, j.second.sent, r_d, s_d, fmt);
-					attron(A_DIM);
-					mvprintw(cur_row++, 0, "           %-*s %10.2f %10.2f  %-5s", host_line, r_host.c_str(), r_d, s_d, fmt);
-					attroff(A_DIM);
+                                        //attron(A_DIM);
+                                        //mvprintw(cur_row++, 0, "           %-*s %10.2f %10.2f  %-5s", host_line, r_host.c_str(), r_d, s_d, fmt);
+
+                                        const auto seconds = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+                                        //std::cout<<seconds.count()<<","<<i.pid<<","<<r_cmd.c_str()<<","<<r_d<<" "<<fmt<<","<<s_d<<" "<<fmt<<"\n";
+                                        if(i.pid != -1) {
+                                            std::cout<<seconds.count()<<","<<i.pid<<","<<r_host.c_str()<<","<<r_d<<" "<<fmt<<","<<s_d<<" "<<fmt<<"\n";
+                                        }
+                                        //printf("%6d,%s,%s,%10.2f,%10.2f\n", i.pid, r_cmd.c_str(), r_host.c_str(),  r_d, s_d);
+                                        //attroff(A_DIM);
 					++cur_hosts;
 				}
 			}
@@ -222,16 +232,16 @@ namespace {
 			char	total_buf[128];
 			snprintf(total_buf, 128, "%s [%5.2fs (%5lu/%5lu/%5lu/%5lu/%5lu)]", 
 				__version__, 1.0*tm_elapsed.count()/1000000000.0, st.total_pkts, st.total_pkts-st.proc_pkts, st.undet_pkts, st.unmap_r_pkts, st.unmap_s_pkts);
-			mvprintw(0, 0, "nettop %-*s", cmdline_len-6, total_buf);
-			mvprintw(0, cmdline_len+1, "  Total %10.2f %10.2f  %-5s", r_d, s_d, fmt);
-			refresh();
+                        //mvprintw(0, 0, "nettop %-*s", cmdline_len-6, total_buf);
+                        //mvprintw(0, cmdline_len+1, "  Total %10.2f %10.2f  %-5s", r_d, s_d, fmt);
+                        //refresh();
 		}
 	};
 
-	char	curses_setup::BPS[] = "Byte/s",
-		curses_setup::KBPS[] = "KiB/s ",
-		curses_setup::MBPS[] = "MiB/s ",
-		curses_setup::GBPS[] = "GiB/s ";
+        char	curses_setup::BPS[] = "Byte/s",
+                curses_setup::KBPS[] = "KiB/s ";
+                //curses_setup::MBPS[] = "MiB/s ",
+                //curses_setup::GBPS[] = "GiB/s ";
 
 	struct stdin_exit : public utils::epoll_stdin {
 		virtual bool on_data(const char* p, const size_t sz) const {
@@ -280,7 +290,7 @@ int main(int argc, char *argv[]) {
 		std::thread			cap_th(&nettop::cap_mgr::async_cap, &c, std::ref(p_list), std::ref(quit));
 		cap_th.detach();
 		// init curses
-		curses_setup			c_window(nr, nettop::settings::LIMIT_HOSTS_ROWS);
+                curses_setup			c_window(nr, nettop::settings::LIMIT_HOSTS_ROWS);
 		system_clock::time_point	latest_time = std::chrono::system_clock::now();
 		// initi epoll_stdin
 		stdin_exit			ep_exit;
@@ -302,7 +312,8 @@ int main(int argc, char *argv[]) {
 					if(ep_exit.do_io(sleep_interval))
 						break;
 					total_msec_slept += sleep_interval;
-					if(nettop::settings::REFRESH_SECS <= total_msec_slept/1000)
+                                        //if(1 <= total_msec_slept/1000)
+                                        if(1 <= total_msec_slept/250)
 						break;
 				}
 			}
@@ -321,9 +332,9 @@ int main(int argc, char *argv[]) {
 				sorted_p_vec	s_v;
 				sort_filter_data(p_vec, s_v);
 				// redraw now
-				c_window.redraw(cur_time - latest_time, s_v, ps_list.size(), mgr_st);
+                                c_window.redraw(cur_time - latest_time, s_v, ps_list.size(), mgr_st);
 			} else {
-				c_window.draw_paused();
+                                c_window.draw_paused();
 			}
 			// set latest time
 			latest_time = cur_time;
